@@ -10,7 +10,7 @@
 - RM 574606: **Nico Hungria Santos**
 
 ## 2. Problema abordado
-  A dor que escolhemos foi o Tema 2.1. As câmeras (CFTV) da Motiva ficam expostas ao ar livre, consequentemente estas ficam expostas à condições extremas como poeira, fuligem, chuva, insetos e ninhos. A Motiva procura nos alunos uma solução que os ajude a identificar a saúde visual da câmera evitando falsos positivos como por exemplo chamado de manutenção para casso como ofuscamento solar e neblina.  
+  A dor que escolhemos foi o Tema 2.1. As câmeras (CFTV) da Motiva ficam ao ar livre, consequentemente estas ficam expostas à condições extremas como poeira, fuligem, chuva, insetos e ninhos. A Motiva procura nos alunos uma solução que os ajude a identificar a saúde visual da câmera evitando falsos positivos como por exemplo chamado de manutenção para casso como ofuscamento solar e neblina.  
   
   De acordo com o briefing disponibilizado pela Motiva, a empresa busca uma solução que minimize custos e seja eficiente em distinguir um problema recorrente genuíno de condições climáticas esporádicas como neblina.
 
