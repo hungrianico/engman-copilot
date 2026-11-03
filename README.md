@@ -19,34 +19,28 @@
 ## 4. Escopo do assistente
 [Lista do que faz e lista do que recusa. Precisa bater com o system prompt.]
 
-## 5. Recorte e persona
-[Recorte A ou B + persona principal, com 2 a 3 frases de justificativa.]
-
-## 6. Escopo do assistente
-[Lista do que faz e lista do que recusa. Precisa bater com o system prompt.]
-
-## 7. Arquitetura da solução
+## 5. Arquitetura da solução
 [Tabela com no mínimo 2 modelos e 2 vector stores, critérios objetivos e o trade-off aceito.]
 
-## 8. Base de conhecimento
+## 6. Base de conhecimento
 [Resumo do inventário e como será usada no RAG.]
 
-## 9. System prompt
+## 7. System prompt
 [Resumo do inventário e como será usada no RAG.]
 
-## 10. Eval set
+## 8. Eval set
 [Resumo dos 10 casos por categoria + link para o JSON]
 
-## 11. Tools especificadas
+## 9. Tools especificadas
 [Tabela nome / o que faz / parâmetros + link para tools_spec.json.]
 
-## 12. Riscos e mitigação
+## 10. Riscos e mitigação
 [Resumo da matriz: risco ? impacto ? mitigação no prompt ou na arquitetura.]
 
-## 13. Limitações conhecidas [isso nao é obrigatorio]
+## 11. Limitações conhecidas [isso nao é obrigatorio]
 [Onde o assistente ainda falha ou depende de dado que a Motiva precisaria fornecer.]
 
-## 14. Referências
+## 12. Referências
 [Briefing da Motiva, materiais da disciplina, normas citadas (NR-10, NR-35), guias de prompting.]
 
 
