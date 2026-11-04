@@ -28,6 +28,10 @@ Por que escolher o recorte B e não A?: Enquanto o recorte A funciona na identif
 - Consome o Zabbix e os alarmes gerados por ele
 - Recomenda possiveis ações (ex: acionar manutenção, manter em observação, ou sem ação para falsos alarmes ou casos de baixa prioridade)
 - Dependendo da informação do Zabbix, informa o caso dos ativos conforme solicitação
+- Exibe status de alarmes entre falhas reais ou falsos positivios
+- Sugere ordem de ação
+- Exibe classificações como: Limpa, Suja, Parcialmente suja, Severamente Suja ou Desfocada
+- 
 ### 4.2 O que recusa:
 - Inventar dados
 - Tratar de dados pessoais
