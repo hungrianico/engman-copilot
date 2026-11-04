@@ -1,7 +1,7 @@
 # engman-copilot
 
 ## 1. Nome do projeto e integrantes
-**Assistente:** [ainda n sei o nome]
+**Assistente:** EngMan Copilot
 - Grupo: **1CCPB-2026-Grupo2**
 - RM 575067: **Gilson Gomes da Silva**
 - RM 575140: **Hilda Bonnibel de Oliveira Sousa Dias**
