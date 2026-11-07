@@ -46,9 +46,11 @@ Por que escolher o recorte B e não A?: Enquanto o recorte A funciona na identif
 **Frase de recusa:** "Eu não posso atender a esta solicitação pois ela foge do meu escopo de atuação"
 
 ## 5. Arquitetura da solução
+[TO-DO] Detalhas os passos do fluxograma
+
 
 ## 6. Stack e justificativa técnica
-# Comparação de modelos - Llama 3.1 x Qwen 2.5
+### Comparação de modelos - Llama 3.1 x Qwen 2.5
 | Critério | Llama 3.1 | Qwen 2.5 |
 | ---: | :---: | :---: |
 | Custo de uso | Gratuito | Gratuito |
@@ -59,7 +61,7 @@ Por que escolher o recorte B e não A?: Enquanto o recorte A funciona na identif
 | Facilidade de integração com Python | Integração fácil usando Ollama | Integração fácil usando Ollama |
 | Maturidade / documentação | Documentação focada na arquitetura, infraestrutura e treinamento do modelo | Documentação abrangente, com documentação de benchmarks, aplicabilidade de frameworks e especializações |
 
-# Comparação de Vector Stores - ChromaDB x FAISS
+### Comparação de Vector Stores - ChromaDB x FAISS
 
 | Critério | ChromaDB | FAISS |
 | ---: | :---: | :---: |
@@ -76,11 +78,14 @@ Por que escolher o recorte B e não A?: Enquanto o recorte A funciona na identif
 | Velocidade de busca | Alta | Alta, com forte otimização |
 | Facilidade de configuração | Alta | Média a baixa |
 
-# Justificativa de escolhas Qwen 2.5 e ChromaDB
-
+### Justificativa de escolhas das Stacks
+#### Modelo
 Tanto Qwen quanto Llama são liberais com suas licenças de distribuição (para nosso caso de uso), rodam localmente e são LLMs fáceis e suficientes para nossa necessidade. Mas escolhemos como LLM o Qwen 2.5 por ter uma qualidade de raciocínio maior em português e uma documentação com maior foco em aplicabilidade e integrações. Como trade-off, o Qwen 2.5 apresenta uma janela de contexto menor que a do Llama 3.1, mas acreditamos que ainda será suficiente para nosso uso.  
-
+#### Orquestração
+#### Vector Store
 Entre ChromaDB e FAISS escolhemos o ChromaDB, por ser um RAG convencional de fácil configuração. Além de ser nativamente construido em Python, tem armazenamento de documentos e metadados implementados nativamente. O FAISS seria uma opção melhor em performance, mas consideramos o ChromaDB melhor em funcionalidade.
+#### Embeddings
+#### Interface
 
 ## 7. Base de conhecimento
 [Resumo do inventário e como será usada no RAG.]
