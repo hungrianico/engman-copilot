@@ -46,27 +46,39 @@ Por que escolher o recorte B e não A?: Enquanto o recorte A funciona na identif
 **Frase de recusa:** "Eu não posso atender a esta solicitação pois ela foge do meu escopo de atuação"
 
 ## 5. Arquitetura da solução
+
+## 6. Stack e justificativa técnica
+# Comparação de modelos - Llama 3.1 x Qwen 2.5
+| Critério | Llama 3.1 | Qwen 2.5 |
+| ---: | :---: | :---: |
+| Custo de uso | Gratuito | Gratuito |
+| Licença / termos de uso | Uso comercial livre se a quantidade de usuários mensais for abaixo de 700 milhões. Os dados são usados pela Meta | Apache 2.0: Permite uso comercial livre |
+| Qualidade em português (pt-BR) | O modelo com 8B apresenta um MMLU específico em pt-BR de 62,12% e um geral de 66,7% | Não detalha MMLU específico para pt-BR, porém com 7B apresenta MMLU geral de 74.2% |
+| Tamanho da janela de contexto | 128K | 32K |
+| Privacidade do dado (roda local?) | Roda local. Na nuvem, depende da política do provedor | Roda local. Na nuvem coleta dados de input, dados da conta e dados da rede |
+| Facilidade de integração com Python | Integração fácil usando Ollama | Integração fácil usando Ollama |
+| Maturidade / documentação | Documentação focada na arquitetura, infraestrutura e treinamento do modelo | Documentação abrangente, com documentação de benchmarks, aplicabilidade de frameworks e especializações |
 [Tabela com no mínimo 2 modelos e 2 vector stores, critérios objetivos e o trade-off aceito.]
 
-## 6. Base de conhecimento
+## 7. Base de conhecimento
 [Resumo do inventário e como será usada no RAG.]
 
-## 7. System prompt
+## 8. System prompt
 [Resumo do inventário e como será usada no RAG.]
 
-## 8. Eval set
+## 9. Eval set
 [Resumo dos 10 casos por categoria + link para o JSON]
 
-## 9. Tools especificadas
+## 10. Tools especificadas
 [Tabela nome / o que faz / parâmetros + link para tools_spec.json.]
 
-## 10. Riscos e mitigação
+## 11. Riscos e mitigação
 [Resumo da matriz: risco ? impacto ? mitigação no prompt ou na arquitetura.]
 
-## 11. Limitações conhecidas [isso nao é obrigatorio]
+## 12. Limitações conhecidas [isso nao é obrigatorio]
 [Onde o assistente ainda falha ou depende de dado que a Motiva precisaria fornecer.]
 
-## 12. Referências
+## 13. Referências
 [Briefing da Motiva, materiais da disciplina, normas citadas (NR-10, NR-35), guias de prompting.]
 
 
