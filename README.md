@@ -23,7 +23,7 @@ A Motiva possui mais de 5 mil km em extensão de rodovias onde passam por volta 
 
 Por que escolher o recorte B e não A?: Enquanto o recorte A funciona na identificação da causa da falha em ativos e analise histórica, o recorte B define a ordem de prioridade das manutenções dos ativos, auxiliando na tomada de decisão eficiênte.
 
-## 4. Escopo do assistente [voltar aqui depois de fazer o sysprompt]
+## 4. Escopo do assistente
 ### 4.1 O que faz:
 - Consome o Zabbix e os alarmes gerados por ele
 - Recomenda possiveis ações (ex: acionar manutenção, manter em observação, ou sem ação para falsos alarmes ou casos de baixa prioridade)
