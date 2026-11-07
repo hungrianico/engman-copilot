@@ -58,7 +58,29 @@ Por que escolher o recorte B e não A?: Enquanto o recorte A funciona na identif
 | Privacidade do dado (roda local?) | Roda local. Na nuvem, depende da política do provedor | Roda local. Na nuvem coleta dados de input, dados da conta e dados da rede |
 | Facilidade de integração com Python | Integração fácil usando Ollama | Integração fácil usando Ollama |
 | Maturidade / documentação | Documentação focada na arquitetura, infraestrutura e treinamento do modelo | Documentação abrangente, com documentação de benchmarks, aplicabilidade de frameworks e especializações |
-[Tabela com no mínimo 2 modelos e 2 vector stores, critérios objetivos e o trade-off aceito.]
+
+# Comparação de Vector Stores - ChromaDB x FAISS
+
+| Critério | ChromaDB | FAISS |
+| ---: | :---: | :---: |
+| Tipo | Banco de dados vetorial | Biblioteca de busca vetorial |
+| Linguagem principal | Python | C++ |
+| Interface Python | Sim | Sim |
+| Código aberto | Sim | Sim |
+| Licença | Apache 2.0 | MIT |
+| Armazenamento de vetores | Nativo | Por meio de índices |
+| Armazenamento de documentos | Nativo | Não nativo |
+| Armazenamento de metadados | Nativo | Não nativo |
+| Persistência | Nativa | Salvamento e carregamento de índices |
+| Busca textual | Sim | Não |
+| Velocidade de busca | Alta | Alta, com forte otimização |
+| Facilidade de configuração | Alta | Média a baixa |
+
+# Justificativa de escolhas Qwen 2.5 e ChromaDB
+
+Tanto Qwen quanto Llama são liberais com suas licenças de distribuição (para nosso caso de uso), rodam localmente e são LLMs fáceis e suficientes para nossa necessidade. Mas escolhemos como LLM o Qwen 2.5 por ter uma qualidade de raciocínio maior em português e uma documentação com maior foco em aplicabilidade e integrações. Como trade-off, o Qwen 2.5 apresenta uma janela de contexto menor que a do Llama 3.1, mas acreditamos que ainda será suficiente para nosso uso.  
+
+Entre ChromaDB e FAISS escolhemos o ChromaDB, por ser um RAG convencional de fácil configuração. Além de ser nativamente construido em Python, tem armazenamento de documentos e metadados implementados nativamente. O FAISS seria uma opção melhor em performance, mas consideramos o ChromaDB melhor em funcionalidade.
 
 ## 7. Base de conhecimento
 [Resumo do inventário e como será usada no RAG.]
