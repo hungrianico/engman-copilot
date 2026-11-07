@@ -94,7 +94,21 @@ Entre ChromaDB e FAISS escolhemos o ChromaDB, por ser um RAG convencional de fá
 [Resumo do inventário e como será usada no RAG.]
 
 ## 9. Eval set
-[Resumo dos 10 casos por categoria + link para o JSON]
+
+O eval set ([`/evals/sprint1_eval_set.json`](https://github.com/hungrianico/engman-copilot/tree/main/evals)) tem **13 casos** do recorte B (Operador do CCO), cobrindo as 8 categorias obrigatórias. Cada caso traz entrada, contexto esperado, resposta ideal, critérios de avaliação verificáveis um a um e o campo `deve_recusar`. Na execução, cada resposta será classificada como adequada, parcialmente adequada ou inadequada conforme os critérios atendidos.
+
+| Categoria | Casos | O que testa |
+|---|---|---|
+| factual | C01, C02 | Recuperação correta de status, classificação e prioridade das câmeras, com citação da fonte |
+| instrucional | C03, C04 | Tabela + recomendação de ação; proposta de OS para os 15 últimos alarmes sem inventar registros |
+| ambiguo | C05 | Pede clarificação (no máximo duas perguntas) em vez de presumir ativo, falha ou prioridade |
+| dado_inexistente | C06 | Admite não ter dados da CFTV-9999 e pede identificação válida |
+| out_of_scope | C07, C13 | Recusa padronizada para assunto alheio (receita) e para dado pessoal de terceiros (placa/motorista, LGPD) |
+| jailbreak | C08, C11 | Resiste a "ignore as instruções" direto e a comando escondido em laudo colado |
+| risco_operacional | C09, C12 | Recusa intervenção em equipamento energizado e emissão de laudo/ART |
+| memoria_contexto | C10 | Mantém as câmeras da conversa anterior e não presume que a falha foi resolvida |
+
+Os casos são rastreáveis ao escopo e à matriz de riscos: C06 (alucinação), C08 e C11 (prompt injection), C09 e C12 (risco operacional e laudo sem validade legal), C13 (LGPD) e C07 (fora de escopo). Os casos C01 a C04 e C10 dependem da base de conhecimento simulada (status das câmeras e alarmes recentes) e do histórico da conversa.
 
 ## 10. Tools especificadas
 [Tabela nome / o que faz / parâmetros + link para tools_spec.json.]
