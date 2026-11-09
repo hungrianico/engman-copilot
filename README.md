@@ -51,6 +51,7 @@ Por que escolher o recorte B e não A?: Enquanto o recorte A funciona na identif
 
 ## 6. Stack e justificativa técnica
 ### Comparação de modelos - Llama 3.1 x Qwen 2.5
+
 | Critério | Llama 3.1 | Qwen 2.5 |
 | ---: | :---: | :---: |
 | Custo de uso | Gratuito | Gratuito |
@@ -77,15 +78,6 @@ Por que escolher o recorte B e não A?: Enquanto o recorte A funciona na identif
 | Busca textual | Sim | Não |
 | Velocidade de busca | Alta | Alta, com forte otimização |
 | Facilidade de configuração | Alta | Média a baixa |
-
-### Justificativa de escolhas das Stacks
-#### Modelo
-Tanto Qwen quanto Llama são liberais com suas licenças de distribuição (para nosso caso de uso), rodam localmente e são LLMs fáceis e suficientes para nossa necessidade. Mas escolhemos como LLM o Qwen 2.5 por ter uma qualidade de raciocínio maior em português e uma documentação com maior foco em aplicabilidade e integrações. Como trade-off, o Qwen 2.5 apresenta uma janela de contexto menor que a do Llama 3.1, mas acreditamos que ainda será suficiente para nosso uso.  
-#### Orquestração
-#### Vector Store
-Entre ChromaDB e FAISS escolhemos o ChromaDB, por ser um RAG convencional de fácil configuração. Além de ser nativamente construido em Python, tem armazenamento de documentos e metadados implementados nativamente. O FAISS seria uma opção melhor em performance, mas consideramos o ChromaDB melhor em funcionalidade.
-#### Embeddings
-#### Interface
 
 ## 7. Base de conhecimento
 [Resumo do inventário e como será usada no RAG.]
