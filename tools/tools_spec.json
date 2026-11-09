@@ -1,0 +1,116 @@
+{
+    "tools":[
+        {
+            "type": "function",
+            "function": {
+                "name": "consultar_ficha_ativo",
+                "description": "Retorna a ficha de um ativo identificado por TAG com os seguintes dados: Tipo, fabricante, modelo, km na via, praça, instalação, vida útil esperada e criticidade. Use sempre que o usuário solicitar informações sobre um ativo específico.",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "tag":{
+                            "type": "string",
+                            "description": "TAG do ativo a ser consultado, no formato usado pelo catálogo da Motiva"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "type": "function",
+            "function": {
+                "name": "consultar_historico_falhas",
+                "description": "Retorna o histórico de falhas do ativo identificado por TAG, dentro de uma janela de tempo em meses, com os seguintes dados para cada item: data da falha, sintoma, causa da falha, tempo de reparo e reincidência. Use sempre que o usuário solicitar informações sobre falhas de um ativo específico.",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "tag":{
+                            "type": "string",
+                            "description": "TAG do ativo a ser consultado, no formato usado pelo catálogo da Motiva"
+                        },
+                        "janela_meses":{
+                            "type": "integer",
+                            "description": "Janela de tempo em meses para consulta do histórico de falhas do ativo.",
+                            "default": 12
+                        },
+                        "tipo_falha":{
+                            "type": "string",
+                            "description": "Opcional. Filtro sobre o tipo da falha a ser consultada."
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "type": "function",
+            "function": {
+                "name": "abrir_ordem_servico",
+                "description": "Confirma a abertura de uma ordem de serviço para o ativo identificado por TAG, especificando qual deve ser a intervenção, a prioridade do caso e uma breve descrição. Use sempre que o usuário solicitar a abertura de uma ordem de serviço para um ativo.",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "tag":{
+                            "type": "string",
+                            "description": "TAG do ativo a ser consultado, no formato usado pelo catálogo da Motiva"
+                        },
+                        "tipo_intervencao":{
+                            "type": "string",
+                            "enum": ["manutencao", "reparo", "substituicao"],
+                            "description": "Tipo de intervenção a ser realizada no ativo."
+                        },
+                        "prioridade":{
+                            "type": "string",
+                            "enum": ["baixa", "media", "alta"],
+                            "description": "Prioridade da ordem de serviço."
+                        },
+                        "descricao":{
+                            "type": "string",
+                            "description": "Descrição do problema ou da intervenção a ser realizada."
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "type": "function",
+            "function": {
+                "name": "consultar_procedimento",
+                "description": "Retorna o passo a passo do procedimento operacional padrão (POP) específico para o tipo de ativo e intervenção solicitados, detalhando os pré-requisitos de segurança. Use sempre que o usuário solicitar informações sobre o procedimento para realizar uma intervenção em um ativo.",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "ativo_tipo": {
+                            "type": "string",
+                            "description": "TAG do ativo a ser consultado, no formato usado pelo catálogo da Motiva"
+                        },
+                        "tipo_intervencao": {
+                            "type": "string",
+                            "enum": ["manutencao", "reparo", "substituicao"],
+                            "description": "Tipo de intervenção a ser realizada no ativo."
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "type": "function",
+            "function": {
+                "name": "buscar_ativos_criticos",
+                "description": "Retorna um ranking dos ativos organizados por criticidade e pendência de manutenção.",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "praca":{
+                            "type": "string",
+                            "description": "Opcional. Nome da praça para filtrar os ativos. Se não informado, retorna ativos de todas as praças."
+                        },
+                        "limite":{
+                            "type": "integer",
+                            "description": "Número máximo de ativos a serem retornados."
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}
