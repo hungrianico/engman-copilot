@@ -55,7 +55,7 @@
                         },
                         "tipo_intervencao":{
                             "type": "string",
-                            "enum": ["manutencao", "reparo", "substituicao"],
+                            "enum": ["preventiva", "corretiva", "inspecao"],
                             "description": "Tipo de intervenção a ser realizada no ativo."
                         },
                         "prioridade":{
@@ -85,7 +85,7 @@
                         },
                         "tipo_intervencao": {
                             "type": "string",
-                            "enum": ["manutencao", "reparo", "substituicao"],
+                            "enum": ["preventiva", "corretiva", "inspecao"],
                             "description": "Tipo de intervenção a ser realizada no ativo."
                         }
                     }
