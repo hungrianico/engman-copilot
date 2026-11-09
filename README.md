@@ -46,9 +46,22 @@ Por que escolher o recorte B e não A?: Enquanto o recorte A funciona na identif
 **Frase de recusa:** "Eu não posso atender a esta solicitação pois ela foge do meu escopo de atuação"
 
 ## 5. Arquitetura da solução
-[TO-DO] Detalhas os passos do fluxograma
-
-
+### 1 - Usuário (Operador de CCO)
+O usuário que buscamos atender, colaborador no centro de operações da Motiva. O prompt é enviado via texto livre.
+### 2 - Guardrail de entrada (Llama-guard)
+Um modelo que faz a verificação inicial do prompt do usuário. Caso haja suspeitas de quebra de persona, de privacidade ou de segurança o modelo retorna que o prompt não é seguro.
+### 3 - Montagem do contexto
+O modelo faz a leitura do System Prompt e retoma o histórico da conversa, dados do ChromaDB e infos sobre as tools.
+### 4 - Chamada ao LLM
+Contexto é enviado ao Qwen 2.5:7B com temperatura 0.6 e max_tokens = 2000. Uma temperatura mais baixa visto que o modelo precisa ser objetivo e técnico, para garantir a qualidade das sugestões dadas ao operador.
+### 5 - Decisão de tool
+Ao identificar que o pedido do usuário se encaixa em alguma das tools específicadas, faz o uso delas. Caso não haja informações no contexto para responder ao prompt, o modelo puxa do ChromaDB ou da API do Zabbix.
+### 6 - Execução da tool
+Ao obter as informações chamadas pela tool, fazemos uma nova chamada ao modelo com um novo contexto montado.
+### 7 - Guardrail de saída (System Prompt)
+A verificação de saída está no próprio system prompt, o forçando a não inventar dados e manter-se no escopo do assistente.
+### 8 - Resposta + atualização do histórico
+Após a verificação da resposta, ela é mostrada para o usuário. É gerado um embedding da interação, que é guardado no banco de dados do histórico da conversa.
 ## 6. Stack e justificativa técnica
 ### Comparação de modelos - Llama 3.1 x Qwen 2.5
 
