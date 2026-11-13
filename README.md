@@ -116,7 +116,7 @@ O eval set ([`/evals/sprint1_eval_set.json`](https://github.com/hungrianico/engm
 Os casos são rastreáveis ao escopo e à matriz de riscos: C06 (alucinação), C08 e C11 (prompt injection), C09 e C12 (risco operacional e laudo sem validade legal), C13 (LGPD) e C07 (fora de escopo). Os casos C01 a C04 e C10 dependem da base de conhecimento simulada (status das câmeras e alarmes recentes) e do histórico da conversa.
 
 ## 10. Tools especificadas
-A especificação completa está em [`tools_spec.json`](./tools_spec.json).
+A especificação completa está em [`tools_spec.json`](tools/tools_spec.json).
 
 | Nome | O que faz | Parâmetros |
 |---|---|---|
