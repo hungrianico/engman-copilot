@@ -116,7 +116,15 @@ O eval set ([`/evals/sprint1_eval_set.json`](https://github.com/hungrianico/engm
 Os casos são rastreáveis ao escopo e à matriz de riscos: C06 (alucinação), C08 e C11 (prompt injection), C09 e C12 (risco operacional e laudo sem validade legal), C13 (LGPD) e C07 (fora de escopo). Os casos C01 a C04 e C10 dependem da base de conhecimento simulada (status das câmeras e alarmes recentes) e do histórico da conversa.
 
 ## 10. Tools especificadas
-[Tabela nome / o que faz / parâmetros + link para tools_spec.json.]
+A especificação completa está em [`tools_spec.json`](./tools_spec.json).
+
+| Nome | O que faz | Parâmetros |
+|---|---|---|
+| `consultar_ficha_ativo` | Retorna a ficha de um ativo: tipo, fabricante, modelo, km na via, praça, instalação, vida útil esperada e criticidade. | `tag` (string): TAG do ativo no formato do catálogo da Motiva |
+| `consultar_historico_falhas` | Retorna o histórico de falhas de um ativo em uma janela de tempo, com data, sintoma, causa, tempo de reparo e reincidência. | `tag` (string): TAG do ativo<br>`janela_meses` (integer, padrão `12`): janela de consulta em meses<br>`tipo_falha` (string, opcional): filtro por tipo de falha |
+| `abrir_ordem_servico` | Confirma a abertura de uma ordem de serviço para um ativo, com intervenção, prioridade e descrição. | `tag` (string): TAG do ativo<br>`tipo_intervencao` (enum: `preventiva`, `corretiva`, `inspecao`)<br>`prioridade` (enum: `baixa`, `media`, `alta`)<br>`descricao` (string): problema ou intervenção a realizar |
+| `consultar_procedimento` | Retorna o passo a passo do POP para o ativo e a intervenção informados, incluindo pré-requisitos de segurança. | `ativo_tipo` (string): TAG do ativo<br>`tipo_intervencao` (enum: `preventiva`, `corretiva`, `inspecao`) |
+| `buscar_ativos_criticos` | Retorna um ranking de ativos por criticidade e pendência de manutenção. | `praca` (string, opcional): filtra por praça; sem ela, considera todas<br>`limite` (integer): número máximo de ativos retornados |
 
 ## 11. Riscos e mitigação
 [Resumo da matriz: risco ? impacto ? mitigação no prompt ou na arquitetura.]
