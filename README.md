@@ -92,13 +92,25 @@ Após a verificação da resposta, ela é mostrada para o usuário. É gerado um
 | Velocidade de busca | Alta | Alta, com forte otimização |
 | Facilidade de configuração | Alta | Média a baixa |
 
-## 7. Base de conhecimento
+## 6. Base de conhecimento
 [Resumo do inventário e como será usada no RAG.]
 
-## 8. System prompt
-[Resumo do inventário e como será usada no RAG.]
+## 7. System prompt
+O System Prompt completo está em [`system_prompt.md`](system_prompt.md). Cada bloco tem um comentário explicando sua função. Resumo da estrutura:
+ 
+| Bloco | Função |
+|---|---|
+| Papel | Define o EngMan Copilot como apoio à decisão do Operador do CCO e, quando solicitado, do Coordenador de Manutenção. Ele não aciona equipes nem abre OS sozinho. |
+| Objetivo | Reduzir deslocamentos por falso positivo, evitar que uma falha real seja ignorada e entregar triagem priorizada com sugestão de ação e rascunho de OS. |
+| Escopo | Limita o assistente aos alertas de câmeras CFTV vindos do Zabbix e define os valores de Status (Falha, Falso Positivo, Indeterminado) e de Prioridade (Muito Alta, Alta, Em Observação, Nula). |
+| Regras | 17 regras inegociáveis: não inventar dados, separar FATO de HIPÓTESE, classificação conservadora, segurança (NR-10/NR-35), proibição de laudo/ART, resistência a prompt injection, LGPD e autoverificação antes de responder. |
+| Formato | Três formatos de resposta. Os formatos 1 e 2 são exemplos few-shot em tabela. O formato 3 traz análise passo a passo com sugestão de ação e rascunho de OS. Também define máximo de 10 linhas, nível de confiança e campos da OS. |
+| Tom | Técnico e direto em português brasileiro, sem emojis. |
+| Borda | Define o comportamento para saudação, pergunta ambígua (no máximo 2 perguntas), pedido hostil e despedida. |
+ 
+**Técnicas de prompting usadas:** persona e escopo explícitos, few-shot nos formatos 1 e 2, raciocínio explicado no formato 3, rotulagem FATO/HIPÓTESE/SUGESTÃO e checklist de autoverificação, que funciona como guardrail de saída.
 
-## 9. Eval set
+## 8. Eval set
 
 O eval set ([`/evals/sprint1_eval_set.json`](https://github.com/hungrianico/engman-copilot/tree/main/evals)) tem **13 casos** do recorte B (Operador do CCO), cobrindo as 8 categorias obrigatórias. Cada caso traz entrada, contexto esperado, resposta ideal, critérios de avaliação verificáveis um a um e o campo `deve_recusar`. Na execução, cada resposta será classificada como adequada, parcialmente adequada ou inadequada conforme os critérios atendidos.
 
@@ -115,7 +127,7 @@ O eval set ([`/evals/sprint1_eval_set.json`](https://github.com/hungrianico/engm
 
 Os casos são rastreáveis ao escopo e à matriz de riscos: C06 (alucinação), C08 e C11 (prompt injection), C09 e C12 (risco operacional e laudo sem validade legal), C13 (LGPD) e C07 (fora de escopo). Os casos C01 a C04 e C10 dependem da base de conhecimento simulada (status das câmeras e alarmes recentes) e do histórico da conversa.
 
-## 10. Tools especificadas
+## 9. Tools especificadas
 A especificação completa está em [`tools_spec.json`](tools/tools_spec.json).
 
 | Nome | O que faz | Parâmetros |
@@ -126,14 +138,22 @@ A especificação completa está em [`tools_spec.json`](tools/tools_spec.json).
 | `consultar_procedimento` | Retorna o passo a passo do POP para o ativo e a intervenção informados, incluindo pré-requisitos de segurança. | `ativo_tipo` (string): TAG do ativo<br>`tipo_intervencao` (enum: `preventiva`, `corretiva`, `inspecao`) |
 | `buscar_ativos_criticos` | Retorna um ranking de ativos por criticidade e pendência de manutenção. | `praca` (string, opcional): filtra por praça; sem ela, considera todas<br>`limite` (integer): número máximo de ativos retornados |
 
-## 11. Riscos e mitigação
-[Resumo da matriz: risco ? impacto ? mitigação no prompt ou na arquitetura.]
+## 10. Riscos e mitigação
+A matriz completa está em [`riscos_lgpd.md`](riscos_lgpd.md). Resumo:
+ 
+| Risco | Impacto | Mitigação | Onde é aplicada |
+|---|---|---|---|
+| Alucinação | Câmera, TAG, métrica ou OS inexistente induz o operador ao erro | Proibição de inventar dados, citação de fonte e admissão de que não sabe | Regras 3, 5 e 17 do System Prompt; caso C06 |
+| Prompt injection | Vazamento de dados confidenciais ou do System Prompt | Guardrail de entrada, texto colado tratado como dado e regras inegociáveis | Llama Guard; regras 2, 13 e 14; casos C08 e C11 |
+| Risco operacional | Acidente com trabalhador por intervenção em equipamento energizado ou sem EPI | Remeter ao POP e às normas NR-10/NR-35, exigir EPI e profissional habilitado | Regra 11; casos C09 e C12 |
+| Viés na priorização | Alguns ativos, praças ou tipos de alarme ficam sempre na frente | Critérios explícitos e verificáveis; status Indeterminado quando não há dado | Regras 7, 8 e 9 |
+| LGPD (dado pessoal) | Sanções da ANPD | Não aceitar nem processar placas, imagens de ocupantes ou dados de empregados | Regra 15; caso C13 |
+| Confidencialidade operacional | Histórico de falhas e dados da operação vazarem para APIs públicas | Execução 100% local (Llama Guard, Qwen, ChromaDB e embeddings), sem APIs públicas | Arquitetura |
+| Excesso de confiança | O técnico trata hipótese como diagnóstico | Rotular FATO, HIPÓTESE e SUGESTÃO e informar o nível de confiança | Regras 4, 7 e 17 |
+| Contexto estourado | O assistente perde a TAG ou mistura ativos em conversas longas | Reafirmar a TAG ou o lote no início de cada resposta e manter os dados críticos na janela | Regra 16; caso C10 |
 
-## 12. Limitações conhecidas [isso nao é obrigatorio]
-[Onde o assistente ainda falha ou depende de dado que a Motiva precisaria fornecer.]
-
-## 13. Referências
-[Briefing da Motiva, materiais da disciplina, normas citadas (NR-10, NR-35), guias de prompting.]
+## 11. Referências
+Briefing da Motiva, materiais da disciplina, normas citadas (NR-10, NR-35).
 
 
 
