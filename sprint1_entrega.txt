@@ -1,0 +1,13 @@
+CHALLENGE SPRINT 01 - ENGMAN COPILOT (FIAP x MOTIVA)
+Grupo: 1CCPB-2026-Grupo2 - Turma 1CCPB
+Recorte escolhido: B - Operação e Priorização de Campo
+
+Integrantes:
+Gilson Gomes da Silva - RM 575067 - 1CCPB
+Hilda Bonnibel de Oliveira Sousa Dias - RM 575140 - 1CCPB
+Igor Alcalde de Jesus Borba - RM 575086 - 1CCPB
+Matheus Regis Kabakian Albano - RM 576186 - 1CCPB
+Nico Hungria Santos - RM 574606 - 1CCPB
+
+Repositório: https://github.com/hungrianico/engman-copilot
+Fluxograma: https://github.com/hungrianico/engman-copilot/blob/main/docs/arquitetura.png
