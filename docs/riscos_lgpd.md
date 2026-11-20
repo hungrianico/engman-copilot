@@ -1,9 +1,9 @@
-## Riscos, ética e LPGD
+## Riscos, ética e LGPD
 
 ### Alucinação
 <!-- - Inventar TAG, modelo, número de OS, métrica, trecho de norma ou registro de histórico. -->
 - DESCRIÇÃO: Alucinação faz que o modelo crie dados não existentes, fazendo com que a resposta seja inútil ou prejudicial, enganando o operador.
-- IMPACTO: Invenção de câmera não existente, 
+- IMPACTO: Invenção de câmera, TAG, métrica ou OS inexistente induz o operador a acionar uma equipe sem necessidade (impacto financeiro) ou a ignorar uma falha real (impacto de segurança viária).
 - MITIGAÇÃO: Deve ser mitigado por dar regras claras para não inventar dados, sempre citar suas fontes e admitir que não consegue responder algo.
 - APLICAÇÃO: É aplicado na regra 3, 5 e 17 do systemprompt
 
@@ -27,13 +27,13 @@
 - DESCRIÇÃO: Demonstrar viés para certos alarmes, tipos de problemas, status, câmeras, e soluções, dando prioridade esses mesmo que não sejam o necessário.
 - IMPACTO: Diminui a eficiência das operações, causando mais falsos positivos, e faz que câmeras com problemas sejam inacessíveis
 - MITIGAÇÃO: Usar critérios explícitos e verificáveis para suas decisões.
-- APLICAÇÃO: O natural uso de dados reais e mensuráveis, e saber dizer não e dar status Indeterminado. Impossibilitando criação de vieses.
+- APLICAÇÃO: Regras 7, 8 e 9 do system prompt (classificação conservadora, status Indeterminado quando não há dado) e critérios de prioridade explícitos na matriz de criticidade (D07 do inventário), com catálogo distribuído de forma equilibrada entre as praças.
 
 ### LGPD — dado pessoal
 <!-- - Dados de empregados, imagens de ocupantes, placas capturadas por OCR entrarem na base ou no prompt. -->
   - DESCRIÇÃO: Dados privados e pessoais que não podem entrar na base ou serem processados via prompt. Placa de carro, imagens de ocupantes, dados de empregados e afins.
   - IMPACTO: Acarretar em processos ou sanções da ANPD.
-- MITIGAÇÃO: Declarar o que pode entrar na base, anonimizar placas, e não enviar dados para nenhum local externo
+- MITIGAÇÃO: Declarar o que nunca entra na base (inventario.md, seção 5: dados de empregados, placas, imagens de ocupantes), não processar esses dados no prompt e não enviar dados para nenhum local externo.
 - APLICAÇÃO: É aplicado na regra 15 do systemprompt.
 
 ### Confidencialidade operacional
