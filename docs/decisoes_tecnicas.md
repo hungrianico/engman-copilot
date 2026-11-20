@@ -14,3 +14,8 @@ O FAISS seria uma opção melhor em performance, mas consideramos o ChromaDB mel
 Considerando a natureza do projeto, optamos por usar a framework Sentence Transformers localmente para geração de embeddings. Acreditamos que a segurança e privacidade seja crucial para os dados que estamos trabalhando, fazendo com que o desenvolvimento local dos embeddings seja preferível.  
 Ainda que haja a manutenção de um servidor local, sabemos que a privacidade e o controle dos dados fazem valer tal custo de infraestrutura.
 #### Interface
+Prevista para fases futuras: terminal interativo, por exigir menos dependências e rodar 100% local. Nenhuma interface é implementada na Sprint 01.
+#### Ambiente
+Python 3.10+, com execução local via Ollama (Qwen 2.5 7B e Llama Guard 3).
+#### Versionamento
+Git + GitHub (repositório público), com commits de todos os integrantes ao longo das semanas.
