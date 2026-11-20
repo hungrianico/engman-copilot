@@ -60,8 +60,8 @@
                         },
                         "prioridade":{
                             "type": "string",
-                            "enum": ["baixa", "media", "alta"],
-                            "description": "Prioridade da ordem de serviço."
+                            "enum": ["muito_alta", "alta", "em_observacao"],
+                            "description": "Prioridade da ordem de serviço, alinhada às prioridades do system prompt: muito_alta (acionar imediatamente), alta (acionar equipe na rota) ou em_observacao (monitorar, verificar remotamente e reavaliar). A prioridade Nula do system prompt significa sem ação e não gera ordem de serviço."
                         },
                         "descricao":{
                             "type": "string",
@@ -81,7 +81,8 @@
                     "properties": {
                         "ativo_tipo": {
                             "type": "string",
-                            "description": "TAG do ativo a ser consultado, no formato usado pelo catálogo da Motiva"
+                            "enum": ["CFTV"],
+                            "description": "Tipo do ativo para o qual se quer o procedimento (não é a TAG individual). Se o usuário informou apenas a TAG, use o prefixo dela (ex.: CFTV-038 corresponde a CFTV)."
                         },
                         "tipo_intervencao": {
                             "type": "string",
