@@ -143,8 +143,8 @@ A especificação completa está em [`tools_spec.json`](tools/tools_spec.json).
 |---|---|---|
 | `consultar_ficha_ativo` | Retorna a ficha de um ativo: tipo, fabricante, modelo, km na via, praça, instalação, vida útil esperada e criticidade. | `tag` (string): TAG do ativo no formato do catálogo da Motiva |
 | `consultar_historico_falhas` | Retorna o histórico de falhas de um ativo em uma janela de tempo, com data, sintoma, causa, tempo de reparo e reincidência. | `tag` (string): TAG do ativo<br>`janela_meses` (integer, padrão `12`): janela de consulta em meses<br>`tipo_falha` (string, opcional): filtro por tipo de falha |
-| `abrir_ordem_servico` | Confirma a abertura de uma ordem de serviço para um ativo, com intervenção, prioridade e descrição. | `tag` (string): TAG do ativo<br>`tipo_intervencao` (enum: `preventiva`, `corretiva`, `inspecao`)<br>`prioridade` (enum: `baixa`, `media`, `alta`)<br>`descricao` (string): problema ou intervenção a realizar |
-| `consultar_procedimento` | Retorna o passo a passo do POP para o ativo e a intervenção informados, incluindo pré-requisitos de segurança. | `ativo_tipo` (string): TAG do ativo<br>`tipo_intervencao` (enum: `preventiva`, `corretiva`, `inspecao`) |
+| `abrir_ordem_servico` | Confirma a abertura de uma ordem de serviço para um ativo, com intervenção, prioridade e descrição. | `tag` (string): TAG do ativo<br>`tipo_intervencao` (enum: `preventiva`, `corretiva`, `inspecao`)<br>`prioridade` (enum: `muito_alta`, `alta`, `em_observacao`; a prioridade Nula não gera OS)<br>`descricao` (string): problema ou intervenção a realizar |
+| `consultar_procedimento` | Retorna o passo a passo do POP para o ativo e a intervenção informados, incluindo pré-requisitos de segurança. | `ativo_tipo` (enum: `CFTV`): tipo do ativo, não a TAG individual<br>`tipo_intervencao` (enum: `preventiva`, `corretiva`, `inspecao`) |
 | `buscar_ativos_criticos` | Retorna um ranking de ativos por criticidade e pendência de manutenção. | `praca` (string, opcional): filtra por praça; sem ela, considera todas<br>`limite` (integer): número máximo de ativos retornados |
 
 ## 11. Riscos e mitigação
@@ -161,5 +161,14 @@ A matriz completa está em [`riscos_lgpd.md`](riscos_lgpd.md). Resumo:
 | Excesso de confiança | O técnico trata hipótese como diagnóstico | Rotular FATO, HIPÓTESE e SUGESTÃO e informar o nível de confiança | Regras 4, 7 e 17 |
 | Contexto estourado | O assistente perde a TAG ou mistura ativos em conversas longas | Reafirmar a TAG ou o lote no início de cada resposta e manter os dados críticos na janela | Regra 16; caso C10 |
 
-## 12. Referências
+## 12. Limitações conhecidas
+- **O Zabbix é simulado por arquivo.** Nesta fase os alarmes vêm de um export fictício (`02_alarmes_zabbix.json`). Não existe tool que consulte o Zabbix: a descrição da arquitetura cita a API do Zabbix, mas as 5 tools especificadas não a cobrem. Uma versão real precisaria de uma nova tool de consulta de alarmes.
+- **Os critérios de prioridade estão fora do system prompt.** O prompt define os valores (Muito Alta, Alta, Em Observação, Nula), mas os critérios detalhados ficam na matriz de criticidade (D07, base de conhecimento). O assistente depende de recuperar esse documento corretamente; se a recuperação falhar, a priorização perde consistência.
+- **Os dados são fictícios.** Catálogo, alarmes, histórico, POPs e boletins são simulados e não foram validados com dados reais da Motiva. Os limiares e a distribuição de falhas são plausíveis, não medidos.
+- **O assistente não analisa imagens.** A classificação da câmera e a porcentagem de obstrução vêm do alerta; sem esses campos o resultado é "Indeterminado". Ofuscamento solar (glare) aparece na descrição do problema, mas não está entre as causas previstas no prompt (poeira, fuligem, teias, chuva, neblina).
+- **O eval set não foi executado.** Os 13 casos e as respostas ideais são o projeto de teste. Nenhuma resposta real do modelo foi medida nesta fase.
+- **Limites do modelo local.** O Qwen 2.5 7B tem janela de 32K tokens e não tem benchmark específico para pt-BR. O `num_ctx` do Ollama precisa ser configurado explicitamente, e um modelo de 7B pode errar formato ou regras em conversas longas.
+- **Escopo restrito.** Só câmeras CFTV. PMV, SAT, SCA, pórticos Free Flow e HS WIM estão fora do recorte.
+
+## 13. Referências
 Briefing da Motiva, materiais da disciplina, normas citadas (NR-10, NR-35).
