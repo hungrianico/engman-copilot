@@ -37,7 +37,7 @@ São **11 documentos** (mínimo exigido: 8). O D02 não está na lista base do e
 
 ### D01 — Catálogo de ativos CFTV · simulado
 - **Arquivo planejado:** `data/knowledge_base/01_catalogo_ativos.csv`
-- **Campos:** `tag`, `tipo_ativo`, `fabricante`, `modelo`, `km`, `praca`, `data_instalacao`, `vida_util_anos`, `criticidade` (alta | média | baixa)
+- **Campos:** `tag`, `tipo_ativo`, `fabricante`, `modelo`, `km`, `praca`, `data_instalacao`, `vida_util_anos`, `criticidade` (alta | média | baixa), `origem` (sempre "simulado")
 - **Regras de criação:**
   - TAG no formato `CFTV-NNN`. A TAG `CFTV-9999` fica **reservada como inexistente** (caso C06).
   - O catálogo precisa incluir câmeras nos km 412 e km 210, porque os casos C09, C11, C12 e C13 citam esses pontos.
@@ -47,7 +47,7 @@ São **11 documentos** (mínimo exigido: 8). O D02 não está na lista base do e
 
 ### D02 — Alarmes Zabbix recentes · simulado
 - **Arquivo planejado:** `data/knowledge_base/02_alarmes_zabbix.json`
-- **Campos:** `id_alarme`, `data_hora`, `tag`, `km`, `gatilho` (ex.: "Imagem escura", "Perda de link", "Desfoque detectado", "Obstrução da lente"), `severidade_zabbix` (Information | Warning | Average | High | Disaster), `estado_zabbix` (PROBLEM | OK), `classificacao_camera` (Limpa | Suja | Parcialmente Suja | Severamente Suja | Desfocada), `obstrucao_pct` (pode ser nulo), `causa_informada` (poeira | fuligem | teias | chuva | neblina | nulo), `condicao_meteorologica_informada` (texto ou nulo)
+- **Campos:** `id_alarme`, `data_hora`, `tag`, `km`, `gatilho` (ex.: "Imagem escura", "Perda de link", "Desfoque detectado", "Obstrução da lente"), `severidade_zabbix` (Information | Warning | Average | High | Disaster), `estado_zabbix` (PROBLEM | OK), `classificacao_camera` (Limpa | Suja | Parcialmente Suja | Severamente Suja | Desfocada | nulo quando não há imagem), `obstrucao_pct` (pode ser nulo), `causa_informada` (poeira | fuligem | teias | chuva | neblina | nulo), `condicao_meteorologica_informada` (texto ou nulo). O arquivo traz `origem: "simulado"` no cabeçalho.
 - **O que NÃO consta aqui:** `Status` (Falha | Falso Positivo | Indeterminado) e `Prioridade`. São **saídas do assistente**, calculadas pelas regras do system prompt e pelos critérios do D07. Gravar esses valores no dado seria duplicar a lógica de decisão.
 - **Cobertura mínima de cenários:** falha real por fuligem, poeira e teia; falso positivo com neblina ou chuva informada; campos nulos (`obstrucao_pct`, `causa_informada`) para forçar "Indeterminado"; alerta de falha *com* neblina informada (divergência, regra 6); alarmes repetidos da mesma TAG.
 - **Casos do eval set:** um lote de 5 alarmes simultâneos (C01 a C03) e pelo menos 15 alarmes recentes distintos (C04).
@@ -55,7 +55,7 @@ São **11 documentos** (mínimo exigido: 8). O D02 não está na lista base do e
 
 ### D03 — Histórico de falhas do FSM · simulado
 - **Arquivo planejado:** `data/knowledge_base/03_historico_falhas.csv`
-- **Campos:** `tag`, `data`, `sintoma`, `causa_identificada`, `tempo_reparo_h`, `peca_trocada` (ou "nenhuma"), `reincidencia` (sim | não)
+- **Campos:** `tag`, `data`, `sintoma`, `causa_identificada`, `tempo_reparo_h`, `peca_trocada` (ou "nenhuma"), `reincidencia` (sim | não), `origem` (sempre "simulado")
 - **Regras de criação:** janela de 12 meses (padrão da tool); pelo menos 15 TAGs com histórico; pelo menos 5 TAGs com reincidência; pelo menos 3 TAGs do catálogo **sem nenhum registro**, para treinar o "não há histórico".
 - **Exemplo (fictício):** `CFTV-080 | 2026-06-02 | imagem obstruída | teia de aranha na lente | 1.5 | nenhuma | sim`
 
