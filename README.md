@@ -92,10 +92,19 @@ Após a verificação da resposta, ela é mostrada para o usuário. É gerado um
 | Velocidade de busca | Alta | Alta, com forte otimização |
 | Facilidade de configuração | Alta | Média a baixa |
 
-## 6. Base de conhecimento
-[Resumo do inventário e como será usada no RAG.]
+## 7. Base de conhecimento
+O inventário completo está em [`inventario.md`](data/knowledge_base/inventario.md). Todos os dados são **simulados** (fictícios e identificados como tais), exceto os documentos reais (briefing, glossário e resumo das normas NR-10 e NR-35). A base tem **11 documentos**, todos do recorte CFTV:
 
-## 7. System prompt
+| Grupo | Documentos | Como o assistente acessa |
+|---|---|---|
+| Dados estruturados | Catálogo de ativos (32 câmeras), histórico de falhas (60 registros), POPs (3), alarmes do Zabbix simulados (45) | Tools (`consultar_ficha_ativo`, `consultar_historico_falhas`, `consultar_procedimento`, `buscar_ativos_criticos`) ou carga direta no contexto, com busca exata por TAG |
+| Documentos de apoio (RAG) | Plano preventivo, fichas técnicas, matriz de criticidade, glossário, normas, briefing e boletins de ocorrência (12) | ChromaDB, com busca semântica e filtro por metadados |
+
+**Decisões de RAG:** chunks de ~500 tokens com sobreposição de ~60, `top-k = 4`, e metadados (`doc_id`, `tipo_documento`, `tag`, `km`, `praca`, `data`, `origem`, `secao`) para busca filtrada e citação de fonte. Cada dado tem uma única fonte de verdade, sem duplicação entre tools e base.
+
+**O que não entra na base (LGPD):** dados pessoais de empregados, placas, imagens de ocupantes, dados contratuais ou de arrecadação, dados reais da Motiva, credenciais e endereços de rede, e textos com instruções embutidas.
+
+## 8. System prompt
 O System Prompt completo está em [`system_prompt.md`](system_prompt.md). Cada bloco tem um comentário explicando sua função. Resumo da estrutura:
  
 | Bloco | Função |
@@ -110,7 +119,7 @@ O System Prompt completo está em [`system_prompt.md`](system_prompt.md). Cada b
  
 **Técnicas de prompting usadas:** persona e escopo explícitos, few-shot nos formatos 1 e 2, raciocínio explicado no formato 3, rotulagem FATO/HIPÓTESE/SUGESTÃO e checklist de autoverificação, que funciona como guardrail de saída.
 
-## 8. Eval set
+## 9. Eval set
 
 O eval set ([`/evals/sprint1_eval_set.json`](https://github.com/hungrianico/engman-copilot/tree/main/evals)) tem **13 casos** do recorte B (Operador do CCO), cobrindo as 8 categorias obrigatórias. Cada caso traz entrada, contexto esperado, resposta ideal, critérios de avaliação verificáveis um a um e o campo `deve_recusar`. Na execução, cada resposta será classificada como adequada, parcialmente adequada ou inadequada conforme os critérios atendidos.
 
@@ -127,7 +136,7 @@ O eval set ([`/evals/sprint1_eval_set.json`](https://github.com/hungrianico/engm
 
 Os casos são rastreáveis ao escopo e à matriz de riscos: C06 (alucinação), C08 e C11 (prompt injection), C09 e C12 (risco operacional e laudo sem validade legal), C13 (LGPD) e C07 (fora de escopo). Os casos C01 a C04 e C10 dependem da base de conhecimento simulada (status das câmeras e alarmes recentes) e do histórico da conversa.
 
-## 9. Tools especificadas
+## 10. Tools especificadas
 A especificação completa está em [`tools_spec.json`](tools/tools_spec.json).
 
 | Nome | O que faz | Parâmetros |
@@ -138,7 +147,7 @@ A especificação completa está em [`tools_spec.json`](tools/tools_spec.json).
 | `consultar_procedimento` | Retorna o passo a passo do POP para o ativo e a intervenção informados, incluindo pré-requisitos de segurança. | `ativo_tipo` (string): TAG do ativo<br>`tipo_intervencao` (enum: `preventiva`, `corretiva`, `inspecao`) |
 | `buscar_ativos_criticos` | Retorna um ranking de ativos por criticidade e pendência de manutenção. | `praca` (string, opcional): filtra por praça; sem ela, considera todas<br>`limite` (integer): número máximo de ativos retornados |
 
-## 10. Riscos e mitigação
+## 11. Riscos e mitigação
 A matriz completa está em [`riscos_lgpd.md`](riscos_lgpd.md). Resumo:
  
 | Risco | Impacto | Mitigação | Onde é aplicada |
@@ -152,8 +161,5 @@ A matriz completa está em [`riscos_lgpd.md`](riscos_lgpd.md). Resumo:
 | Excesso de confiança | O técnico trata hipótese como diagnóstico | Rotular FATO, HIPÓTESE e SUGESTÃO e informar o nível de confiança | Regras 4, 7 e 17 |
 | Contexto estourado | O assistente perde a TAG ou mistura ativos em conversas longas | Reafirmar a TAG ou o lote no início de cada resposta e manter os dados críticos na janela | Regra 16; caso C10 |
 
-## 11. Referências
+## 12. Referências
 Briefing da Motiva, materiais da disciplina, normas citadas (NR-10, NR-35).
-
-
-
