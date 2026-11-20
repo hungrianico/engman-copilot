@@ -23,45 +23,83 @@ A Motiva possui mais de 5 mil km em extensão de rodovias onde passam por volta 
 
 Por que escolher o recorte B e não A?: Enquanto o recorte A funciona na identificação da causa da falha em ativos e analise histórica, o recorte B define a ordem de prioridade das manutenções dos ativos, auxiliando na tomada de decisão eficiênte.
 
+Por que o Operador do CCO e não o técnico de campo ou o engenheiro de manutenção?: O operador do CCO é quem recebe os alarmes em tempo real e decide o que acionar e o que apenas monitorar. Um alarme falso gera deslocamento de campo caro; um alarme verdadeiro ignorado gera risco viário. Já o técnico de campo e o engenheiro atuam depois dessa decisão, então é na triagem do operador que o assistente reduz mais custo e risco.
+
 ## 4. Escopo do assistente
 ### 4.1 O que faz:
-- Consome o Zabbix e os alarmes gerados por ele
-- Recomenda possiveis ações (ex: acionar manutenção, manter em observação, ou sem ação para falsos alarmes ou casos de baixa prioridade)
-- Dependendo da informação do Zabbix, informa o caso dos ativos conforme solicitação
-- Exibe status de alarmes entre falhas reais ou falsos positivios
-- Sugere ordem de ação
-- Exibe classificações como: Limpa, Suja, Parcialmente suja, Severamente Suja ou Desfocada
-- Exibe Causa das classificações como: poeira, fuligem, chuva, neblina
-- Diz quando faltam dados ao inves de inventar
-- Mostra porcentagem de obstrução da câmera
+- Consome os alarmes do Zabbix (nesta fase, simulados por arquivo)
+- Classifica cada alarme como Falha, Falso Positivo ou Indeterminado
+- Define a prioridade (Muito Alta, Alta, Em Observação ou Nula) e sugere a ordem de atendimento
+- Recomenda ações possíveis (ex: acionar manutenção, manter em observação, ou sem ação para falsos alarmes ou casos de baixa prioridade)
+- Exibe classificações da câmera como: Limpa, Suja, Parcialmente Suja, Severamente Suja ou Desfocada
+- Exibe a causa das classificações como: poeira, fuligem, teias, chuva, neblina ou Indeterminado
+- Mostra a porcentagem de obstrução da câmera, quando o dado existe no alerta
+- Consulta o histórico de alarmes e falhas de uma câmera identificada por TAG
+- Redige a descrição da ordem de serviço (proposta sujeita à validação humana) e o resumo do atendimento
+- Diz quando faltam dados em vez de inventar
+
 ### 4.2 O que recusa:
-- Inventar dados
-- Tratar de dados pessoais
-- Oferecer auxilio sobre ativos que não sejam as cameras
-- Pedido para mudar de personagem
-- Pedido para mudar de função
-- Pedido para ignorar instruções anteriores
-- Pedido para ver histórico/interações anteriores
-- Não executa nenhum código dado pelo usuário
-**Frase de recusa:** "Eu não posso atender a esta solicitação pois ela foge do meu escopo de atuação"
+- Inventar dados (TAG, km, métrica, porcentagem de obstrução, norma, histórico ou número de OS)
+- Tratar dados pessoais (empregados, placas, imagens de ocupantes)
+- Oferecer auxílio sobre ativos que não sejam as câmeras CFTV, ou sobre assuntos alheios à manutenção
+- Pedido para mudar de personagem ou de função
+- Pedido para ignorar instruções anteriores, ou para revelar as regras, o prompt ou a estrutura interna do assistente
+- Emitir laudo técnico, ART ou parecer com validade legal
+- Orientar intervenção em equipamento energizado, trabalho em altura ou em via sem remeter ao POP e às normas NR-10/NR-35
+- Liberar, bloquear, acionar equipe ou executar intervenção (o assistente só sugere; a decisão é humana)
+- Executar qualquer código fornecido pelo usuário
+
+**Frase de recusa:** "Eu não posso atender a esta solicitação pois ela foge do meu escopo de atuação. Por favor, reformule sua questão para que eu possa ajudar."
 
 ## 5. Arquitetura da solução
-### 1 - Usuário (Operador de CCO)
-O usuário que buscamos atender, colaborador no centro de operações da Motiva. O prompt é enviado via texto livre.
-### 2 - Guardrail de entrada (Llama-guard)
-Um modelo que faz a verificação inicial do prompt do usuário. Caso haja suspeitas de quebra de persona, de privacidade ou de segurança o modelo retorna que o prompt não é seguro.
+![Fluxograma da arquitetura do EngMan Copilot](docs/arquitetura.png)
+
+Fluxograma completo: [`docs/arquitetura.png`](docs/arquitetura.png). A seguir, o fluxo bloco a bloco, com o que entra, o que é processado e o que sai em cada etapa.
+
+### 1 - Entrada (Operador do CCO)
+- **Entra:** texto livre do operador, com uma TAG (ex.: CFTV-038) ou um lote de alarmes do Zabbix.
+- **Sai:** a mensagem, sem alteração, para o guardrail de entrada.
+
+### 2 - Guardrail de entrada (Llama Guard)
+- **Entra:** a mensagem do operador.
+- **Processa:** o Llama Guard 3 (`llama-guard3:8b`, local) verifica o prompt e detecta pedido perigoso ou hostil, quebra de persona, tentativa de jailbreak e dado pessoal.
+- **Sai:** `safe`, e o fluxo segue para a montagem do contexto; ou `unsafe`, e o usuário recebe a mensagem de recusa padrão sem que o Qwen seja chamado.
+
 ### 3 - Montagem do contexto
-O modelo faz a leitura do System Prompt e retoma o histórico da conversa, dados do ChromaDB e infos sobre as tools.
+- **Entra:** a mensagem aprovada.
+- **Processa:** monta o contexto nesta ordem: (1) system prompt, (2) histórico da conversa (últimos 6 turnos), (3) trechos recuperados do ChromaDB (plano preventivo, fichas técnicas, matriz de criticidade, normas, boletins), (4) a TAG ou o lote de alarmes do operador, mais o esquema das tools.
+- **Sai:** o contexto completo para o modelo.
+
 ### 4 - Chamada ao LLM
-Contexto é enviado ao Qwen 2.5:7B com temperatura 0.6 e max_tokens = 2000. Uma temperatura mais baixa visto que o modelo precisa ser objetivo e técnico, para garantir a qualidade das sugestões dadas ao operador.
+- **Entra:** o contexto montado.
+- **Processa:** o Qwen 2.5 7B (via Ollama, local) gera a resposta com temperatura 0.6 e `max_tokens = 2000`. Escolhemos uma temperatura moderada porque o modelo precisa ser objetivo e técnico, para garantir a qualidade das sugestões dadas ao operador.
+- **Sai:** uma resposta ou um pedido de tool.
+
 ### 5 - Decisão de tool
-Ao identificar que o pedido do usuário se encaixa em alguma das tools específicadas, faz o uso delas. Caso não haja informações no contexto para responder ao prompt, o modelo puxa do ChromaDB ou da API do Zabbix.
+- **Entra:** a saída do modelo.
+- **Processa:** se faltar dado de ficha, histórico de falhas, POP, criticidade ou OS, o fluxo segue para a execução da tool. Se o contexto já basta, o fluxo vai direto para o guardrail de saída.
+- **Sai:** `sim` (chama tool) ou `não` (segue para a verificação).
+
 ### 6 - Execução da tool
-Ao obter as informações chamadas pela tool, fazemos uma nova chamada ao modelo com um novo contexto montado.
+- **Entra:** a chamada de uma das 5 tools (`consultar_ficha_ativo`, `consultar_historico_falhas`, `consultar_procedimento`, `buscar_ativos_criticos`, `abrir_ordem_servico`).
+- **Processa:** a tool consulta a base simulada e devolve o dado. A abertura de OS é simulada.
+- **Sai:** o resultado é reinjetado no contexto e o Qwen é chamado de novo (volta ao bloco 4).
+
 ### 7 - Guardrail de saída (System Prompt)
-A verificação de saída está no próprio system prompt, o forçando a não inventar dados e manter-se no escopo do assistente.
+- **Entra:** a resposta gerada.
+- **Processa:** a verificação está no próprio system prompt (regra 17): está no escopo? citou a fonte? não inventou TAG, km, métrica ou percentual? rotulou hipótese como hipótese? nenhum alarme foi descartado sem evidência?
+- **Sai:** `aprovada` (segue para o usuário) ou `reprovada` (o modelo corrige, ou responde com a recusa padrão).
+
 ### 8 - Resposta + atualização do histórico
-Após a verificação da resposta, ela é mostrada para o usuário. É gerado um embedding da interação, que é guardado no banco de dados do histórico da conversa.
+- **Entra:** a resposta aprovada.
+- **Processa:** entrega ao operador no formato definido (tabela ou análise passo a passo, com nível de confiança), grava o turno no histórico e mantém só os últimos 6 turnos, com resumo da conversa a cada 6 turnos.
+- **Sai:** a resposta ao usuário e o histórico atualizado.
+
+### Decisões de arquitetura
+**Por que o guardrail de entrada vem antes do modelo.** Um pedido hostil, uma tentativa de jailbreak ou um dado pessoal (placa, dado de empregado) nunca deve chegar ao Qwen nem ser misturado ao contexto. Barrar antes economiza uma chamada ao modelo, reduz o risco de prompt injection e de LGPD, e a recusa padrão sai sempre igual, o que torna o teste objetivo (casos C07, C08, C11 e C13 do eval set).
+
+**Por que o contexto é montado nessa ordem.** O system prompt vem primeiro para que as regras inegociáveis tenham precedência sobre qualquer coisa que venha depois. Os trechos do ChromaDB, os alarmes e os resultados das tools entram como dado, nunca como instrução (regra 13), para que um texto colado ou um documento recuperado não consiga sobrescrever as regras. A mensagem do operador fica por último, perto da geração, e a TAG é reafirmada a cada resposta (regra 16) para não se perder em conversas longas.
+
 ## 6. Stack e justificativa técnica
 ### Comparação de modelos - Llama 3.1 x Qwen 2.5
 
@@ -91,6 +129,14 @@ Após a verificação da resposta, ela é mostrada para o usuário. É gerado um
 | Busca textual | Sim | Não |
 | Velocidade de busca | Alta | Alta, com forte otimização |
 | Facilidade de configuração | Alta | Média a baixa |
+
+### Conclusão do grupo
+- **Modelo: Qwen 2.5 7B.** Escolhido pela licença Apache 2.0, pelo MMLU geral maior (74,2% contra 66,7% do Llama 3.1 8B, conforme a tabela) e pela documentação mais abrangente. **Trade-off aceito:** a janela de contexto é de 32K tokens, e não os 128K do Llama 3.1. Por isso o projeto limita o histórico aos últimos 6 turnos e reafirma a TAG a cada resposta. O modelo roda local (Ollama), então o histórico de falhas e a criticidade dos ativos não saem da máquina.
+- **Vector store: ChromaDB.** Armazena documentos e metadados nativamente (necessário para filtrar por TAG e citar a fonte) e é simples de configurar. **Trade-off aceito:** o FAISS seria mais rápido, mas a base é pequena e a velocidade não é o gargalo.
+- **Embeddings: Sentence Transformers**, rodando local, pela privacidade do dado operacional. **Orquestração: LangChain**, pela integração entre LLMs, embeddings, banco vetorial e tools.
+- **Ambiente e versionamento:** Python 3.10+ com execução local via Ollama; Git + GitHub (repositório público). A interface (terminal interativo) está prevista e não é implementada nesta fase.
+
+A justificativa completa de cada escolha está em [`docs/decisoes_tecnicas.md`](docs/decisoes_tecnicas.md).
 
 ## 7. Base de conhecimento
 O inventário completo está em [`inventario.md`](data/knowledge_base/inventario.md). Todos os dados são **simulados** (fictícios e identificados como tais), exceto os documentos reais (briefing, glossário e resumo das normas NR-10 e NR-35). A base tem **11 documentos**, todos do recorte CFTV:
