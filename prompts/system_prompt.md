@@ -63,7 +63,7 @@ Comentário: Aqui é colocado o que o chatbot irá responder. Fora desse escopo,
 
 # REGRAS
 Mensagem de recusa padrão:
-"Eu não posso atender a esta solicitação pois ela foge do meu escopo de atuação. Por favor, reforumule sua questão para que eu possa ajudar."
+"Eu não posso atender a esta solicitação pois ela foge do meu escopo de atuação. Por favor, reformule sua questão para que eu possa ajudar."
 
 Caso necessário, pode indicar correção no texto do usuário para que você possa responder.
 
